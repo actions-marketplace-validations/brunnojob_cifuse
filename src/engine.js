@@ -46,7 +46,14 @@ const escapeMd = s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'
 export function markdown(report) {
   const pt=report.lang==='pt-BR';
   const rows=[`# CIFuse — ${pt?'relatório de falhas':'failure report'}`, '', `${report.summary.groups} ${pt?'grupos':'groups'} · ${report.summary.signals} ${pt?'sinais':'signals'} · ${report.summary.lines} ${pt?'linhas':'lines'}`, '', pt?'Correspondências de padrões; revise as evidências. A ausência de sinais não comprova sucesso.':'Pattern matches; review the evidence. No signals does not prove a successful build.', ''];
+  if(report.context)rows.push(`## ${pt?'Contexto do projeto':'Project context'}`, '', escapeMd(JSON.stringify(report.context)), '', escapeMd(report.investigation.explanation), '');
+  if(report.validation)rows.push(`## ${pt?'Validação':'Validation'}`, '', escapeMd(JSON.stringify(report.validation)), '');
+  if(report.repair)rows.push(`## ${pt?'Correção':'Repair'}`, '', escapeMd(JSON.stringify(report.repair)), '');
   for(const f of report.findings) {
+    if(f.role)rows.push(escapeMd(f.role),'');
+    for(const l of f.codeLocations||[])rows.push(`- ${pt?'Código':'Code'}: ${escapeMd(l.path)}:${l.line} (${l.verified?(pt?'verificado':'verified'):(pt?'não verificado':'unverified')})${l.url?' '+l.url:''}`, ...l.snippet.map(s=>`    ${s.line}: ${escapeMd(s.text)}`));
+    for(const d of f.codeDiagnostics||[])rows.push(escapeMd(`${d.path}:${d.line}: ${d.specifier} — ${d.status}; ${d.candidates.join(', ')}`), '');
+    for(const check of f.diagnosis?.checks.slice(1)||[])rows.push(escapeMd(check),'');
     rows.push(`## ${escapeMd(f.title)} (${f.count})`, '', escapeMd(f.evidence), '', escapeMd(f.hint), '', ...f.locations.map(l=>`- ${escapeMd(l.file)}:${l.line}`), '');
   }
   return rows.join('\n');

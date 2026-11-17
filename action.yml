@@ -7,7 +7,7 @@ branding:
 inputs:
   log:
     description: Path to an existing local text log file
-    required: true
+    required: false
   lang:
     description: Report language (en or pt-BR)
     default: en
@@ -17,6 +17,31 @@ inputs:
   fail-on:
     description: Optional findings or new threshold (new requires baseline)
     required: false
+  repo:
+    description: Optional trusted source checkout path for code and config analysis
+    required: false
+  repository:
+    description: owner/repo for source links
+    required: false
+  commit:
+    description: Exact source checkout SHA for links
+    required: false
+  github-run:
+    description: owner/repo/run-id to download failed logs instead of local log
+    required: false
+  token:
+    description: Token for optional log download or PR comment
+    required: false
+  comment:
+    description: Update a report comment on the current PR (requires pull-requests write)
+    default: 'false'
+  output:
+    description: JSON report output path for artifacts and future baseline comparison
+    required: false
+outputs:
+  report:
+    description: JSON report path
+    value: ${{ steps.analyze.outputs.report }}
 runs:
   using: composite
   steps:
@@ -24,8 +49,16 @@ runs:
       with:
         node-version: '22'
     - name: Analyze log
+      id: analyze
       shell: bash
       env:
+        CIFUSE_REPO: ${{ inputs.repo }}
+        CIFUSE_REPOSITORY: ${{ inputs.repository }}
+        CIFUSE_COMMIT: ${{ inputs.commit }}
+        CIFUSE_RUN: ${{ inputs.github-run }}
+        CIFUSE_COMMENT: ${{ inputs.comment }}
+        CIFUSE_OUTPUT: ${{ inputs.output }}
+        GITHUB_TOKEN: ${{ inputs.token }}
         CIFUSE_LOG: ${{ inputs.log }}
         CIFUSE_LANG: ${{ inputs.lang }}
         CIFUSE_BASELINE: ${{ inputs.baseline }}

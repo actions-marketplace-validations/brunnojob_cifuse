@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm test
+      - run: npm run benchmark
       - run: npm run build
       - run: node bin/cifuse.js --demo --format json
   action-smoke:
@@ -26,3 +27,7 @@ jobs:
       - uses: ./
         with:
           log: examples/build.log
+          repo: .
+          repository: ${{ github.repository }}
+          commit: ${{ github.sha }}
+          output: cifuse-report.json

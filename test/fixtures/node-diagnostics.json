@@ -1,0 +1,65 @@
+{
+  "provenance": {
+    "kind": "reproduced-tool-diagnostics",
+    "node": "v24.22.1",
+    "capturedAt": "2026-11-17T18:12:32.650Z",
+    "note": "Actual local tool output from intentionally failing commands; not production incident data."
+  },
+  "fixtures": [
+    {
+      "name": "node-missing-package",
+      "expected": "missing-module",
+      "command": [
+        "node",
+        "-e",
+        "require('cifuse-deliberately-absent-package')"
+      ],
+      "exitCode": 1,
+      "text": "node:internal/modules/cjs/loader:1568\n  throw err;\n  ^\n\nError: Cannot find module 'cifuse-deliberately-absent-package'\nRequire stack:\n- /workspace/scratch/2cb3536f5bc1/cifuse/[eval]\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1564:15)\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)\n    at Module._load (node:internal/modules/cjs/loader:1341:5)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.require (node:internal/modules/cjs/loader:1674:12)\n    at require (node:internal/modules/helpers:157:16)\n    at [eval]:1:1\n    at runScriptInThisContext (node:internal/vm:219:10) {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: [ '/workspace/scratch/2cb3536f5bc1/cifuse/[eval]' ]\n}\n\nNode.js v24.22.1\n"
+    },
+    {
+      "name": "node-assertion",
+      "expected": "test-failure",
+      "command": [
+        "node",
+        "-e",
+        "require('node:assert/strict').equal(1,2)"
+      ],
+      "exitCode": 1,
+      "text": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 2\n\n    at [eval]:1:31\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 1,\n  expected: 2,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.22.1\n"
+    },
+    {
+      "name": "node-refused-service",
+      "expected": "generic-error",
+      "command": [
+        "node",
+        "-e",
+        "fetch('http://127.0.0.1:1').catch(e=>{console.error(e);process.exitCode=1})"
+      ],
+      "exitCode": 1,
+      "text": "[TypeError: fetch failed] {\n  [cause]: Error: bad port\n      at makeNetworkError (node:internal/deps/undici/undici:11898:35)\n      at mainFetch (node:internal/deps/undici/undici:13280:22)\n      at fetching (node:internal/deps/undici/undici:13267:7)\n      at fetch (node:internal/deps/undici/undici:13131:20)\n      at fetch (node:internal/deps/undici/undici:17998:10)\n      at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)\n      at [eval]:1:1\n      at runScriptInThisContext (node:internal/vm:219:10)\n      at node:internal/process/execution:451:12\n      at [eval]-wrapper:6:24\n}\n"
+    },
+    {
+      "name": "node-success",
+      "expected": null,
+      "command": [
+        "node",
+        "-e",
+        "console.log('All checks passed')"
+      ],
+      "exitCode": 0,
+      "text": "All checks passed\n"
+    },
+    {
+      "name": "node-zero-errors",
+      "expected": null,
+      "command": [
+        "node",
+        "-e",
+        "console.log('0 errors; 12 tests passed')"
+      ],
+      "exitCode": 0,
+      "text": "0 errors; 12 tests passed\n"
+    }
+  ]
+}
