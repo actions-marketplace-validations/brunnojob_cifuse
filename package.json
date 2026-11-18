@@ -1,6 +1,6 @@
 {
   "name": "@brunnojob/cifuse",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Turn CI logs into deduplicated, evidence-linked failure reports. Offline CLI, GitHub Action and browser workbench.",
   "type": "module",
   "bin": {

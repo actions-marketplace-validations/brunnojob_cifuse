@@ -7,7 +7,7 @@ import {repair,validateCommand} from '../src/repair.js';
 import {runLogs} from '../src/github.js';
 import {fileURLToPath} from 'node:url';
 import {analyze,markdown,MAX_BYTES} from '../src/engine.js';
-const usage=`CIFuse 0.2.0 — evidence first CI triage
+const usage=`CIFuse 0.2.1 — evidence first CI triage
 Usage: cifuse [file.log ... | - | --demo] [--format json|markdown] [--lang en|pt-BR]
               [--baseline report.json] [--fail-on findings|new]
 Exit: 0 completed, 1 threshold matched, 2 input/usage error.
@@ -26,7 +26,7 @@ async function main() {
   while(args.length) {
     const arg=args.shift();
     if(arg==='--help'||arg==='-h'){console.log(usage);return;}
-    if(arg==='--version'){console.log('0.2.0');return;}
+    if(arg==='--version'){console.log('0.2.1');return;}
     if(arg==='--repo')repo=resolve(take());
     else if(arg==='--repository')repository=take();
     else if(arg==='--commit')commit=take();

@@ -1,5 +1,5 @@
 name: CIFuse CI log triage
-description: Group CI failures and append evidence with investigation steps to the job summary.
+description: Group CI failures, verify source evidence and compare runs. Local-first reports without AI keys.
 author: brunnojob
 branding:
   icon: zap
@@ -37,8 +37,20 @@ inputs:
     default: 'false'
   output:
     description: JSON report output path for artifacts and future baseline comparison
-    required: false
+    default: cifuse-report.json
 outputs:
+  groups:
+    description: Number of grouped failure signatures
+    value: ${{ steps.analyze.outputs.groups }}
+  signals:
+    description: Number of matched diagnostic lines
+    value: ${{ steps.analyze.outputs.signals }}
+  new:
+    description: New signatures compared with baseline, or empty when no baseline supplied
+    value: ${{ steps.analyze.outputs.new }}
+  resolved:
+    description: Baseline signatures absent in supplied logs, or empty without baseline
+    value: ${{ steps.analyze.outputs.resolved }}
   report:
     description: JSON report path
     value: ${{ steps.analyze.outputs.report }}

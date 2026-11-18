@@ -4,6 +4,9 @@
 
 [Try the workbench](https://brunnojob.github.io/cifuse/) · [Português](README.pt-BR.md) · [Contribute](CONTRIBUTING.md) · [Limitations](docs/LIMITATIONS.md)
 
+[![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-CIFuse-2ea44f?logo=github)](https://github.com/marketplace/actions/cifuse-ci-log-triage)
+[![Release](https://img.shields.io/github/v/release/brunnojob/cifuse)](https://github.com/brunnojob/cifuse/releases)
+
 ![CIFuse introduction](site/demo.gif)
 
 [![CI](https://github.com/brunnojob/cifuse/actions/workflows/ci.yml/badge.svg)](https://github.com/brunnojob/cifuse/actions/workflows/ci.yml)
@@ -58,11 +61,15 @@ See [the complete workflow, statuses and limits](docs/REPAIR.md). Run `npm run b
 
 ## GitHub Action
 
+Install **CIFuse CI log triage** from [GitHub Marketplace](https://github.com/marketplace/actions/cifuse-ci-log-triage). Free and MIT licensed. See the [Action guide](docs/ACTION.md) for every input/output, permissions, fork PRs and troubleshooting.
+
 Capture an existing command's output and keep its original failure status. Run CIFuse afterwards:
 
 ```yaml
 steps:
   - uses: actions/checkout@v4
+    with:
+      persist-credentials: false
   - uses: actions/setup-node@v4
     with:
       node-version: '22'
@@ -73,13 +80,23 @@ steps:
       npm test 2>&1 | tee build.log
   - name: Summarize failure evidence
     if: ${{ !cancelled() && hashFiles('build.log') != '' }}
-    uses: brunnojob/cifuse@main
+    uses: brunnojob/cifuse@v0.2.1
     with:
       log: build.log
       lang: en
 ```
 
-The Action appends the report to the job summary. By default it reads one local text file. Optional `github-run: owner/repo/run-id` downloads failed job logs using `token`; optional `comment: true` updates its report on the current PR. These require `actions: read` and `pull-requests: write` respectively. Pin a reviewed commit SHA in production instead of the moving `main` branch. `baseline` accepts a previous JSON report; `fail-on` accepts `findings` or `new` (the latter requires a baseline). Local reporting needs only the checkout's `contents: read`. The Action never executes tests or repairs.
+The Action appends the report to the job summary. By default it reads one local text file. Optional `github-run: owner/repo/run-id` downloads failed job logs using `token`; optional `comment: true` updates its report on the current PR. These require `actions: read` and `pull-requests: write` respectively. Pin a reviewed full commit SHA in production for an immutable reference. `baseline` accepts a previous JSON report; `fail-on` accepts `findings` or `new` (the latter requires a baseline). Local reporting needs only the checkout's `contents: read`. The Action never executes tests or repairs.
+
+The default JSON artifact path is `cifuse-report.json`. Use a step `id` to access `outputs.report`, `outputs.groups`, `outputs.signals`, `outputs.new` and `outputs.resolved`.
+
+```yaml
+  - uses: actions/upload-artifact@v4
+    if: ${{ always() && hashFiles('cifuse-report.json') != '' }}
+    with:
+      name: cifuse-report
+      path: cifuse-report.json
+```
 
 ### Source context and a persistent PR report
 
@@ -91,8 +108,9 @@ steps:
   - uses: actions/checkout@v4
     with:
       ref: ${{ github.event.pull_request.head.sha }}
+      persist-credentials: false
   # Run your existing test step and capture build.log first.
-  - uses: brunnojob/cifuse@main
+  - uses: brunnojob/cifuse@v0.2.1
     if: ${{ !cancelled() && hashFiles('build.log') != '' }}
     with:
       log: build.log
@@ -130,3 +148,7 @@ Serve `dist/` with any static server to try the website locally. Both browser an
 Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [rule catalog](docs/RULES.md), or issues labelled `good first issue`. Sanitized real-world fixtures are especially useful. [Launch material](docs/LAUNCH.md) is ready to adapt for a community post.
 
 Created by [Brunno](https://github.com/brunnojob). MIT licensed. If this saves you time, a star helps others find it.
+
+## Support development
+
+[Contribute any amount via Stripe](https://donate.stripe.com/6oU8wQg9k9Hb8809CrfQI01). Contributions are optional; all features remain free and open source.

@@ -4,6 +4,8 @@
 
 [Experimentar no navegador](https://brunnojob.github.io/cifuse/) · [English](README.md) · [Como contribuir](CONTRIBUTING.md)
 
+[![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-CIFuse-2ea44f?logo=github)](https://github.com/marketplace/actions/cifuse-ci-log-triage)
+
 ![Apresentação do CIFuse](site/demo.gif)
 
 Seu build falhou e você precisa ler erros repetidos, copiar evidências e verificar se a falha já existia. O CIFuse automatiza essa triagem no terminal, no navegador e no resumo do GitHub Actions.
@@ -55,3 +57,16 @@ npm run build
 ```
 
 A interface começa em inglês e permite alternar para PT-BR. Apenas a preferência de idioma é persistida; os logs ficam na memória. Criado por [Brunno](https://github.com/brunnojob), sob licença MIT. Contribuições com logs reais sem dados sensíveis são bem-vindas.
+
+## Instalação pelo Marketplace
+
+```yaml
+- uses: brunnojob/cifuse@v0.2.1
+  with:
+    log: build.log
+    lang: pt-BR
+```
+
+Capture `build.log` no passo de testes antes de executar a Action. Consulte o [guia da Action](docs/ACTION.md) para workflow completo, permissões e outputs. O JSON é salvo em `cifuse-report.json` por padrão. A integração não executa testes nem correções automaticamente.
+
+[Contribua com qualquer valor via Stripe](https://donate.stripe.com/6oU8wQg9k9Hb8809CrfQI01). O apoio é opcional; todas as funcionalidades continuam gratuitas e open source.
